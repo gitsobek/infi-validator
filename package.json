@@ -1,0 +1,34 @@
+{
+  "name": "@infi/validator",
+  "version": "1.0.0",
+  "author": "Piotr Sobuś",
+  "description": "Simple request validator for Express.js apps",
+  "main": "index.js",
+  "license": "MIT",
+  "keywords": [
+    "express",
+    "validator",
+    "xss",
+    "no-sql injection"
+  ],
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "scripts": {
+    "test": "jest --config ./jest.config.js"
+  },
+  "_id": "@infi/validator@1.0.0",
+  "_from": "@infi/validator@latest",
+  "dependencies": {
+    "chalk": "^4.0.0",
+    "lodash": "^4.17.15",
+    "moment": "^2.25.3",
+    "mongoose": "^5.9.11",
+    "xss": "^1.0.6"
+  },
+  "devDependencies": {
+    "express": "^4.17.1",
+    "jest": "^26.0.0",
+    "supertest": "^4.0.2"
+  }
+}

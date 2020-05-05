@@ -1,0 +1,7 @@
+{
+    "isNotEmpty": "Bad request. Empty '%1$' provided.",
+    "isExists": "Bad request. Missing '%1$' in %2$'.",
+    "isString": "Bad request. Provided '%1$' is not a string.",
+    "isNumber": "Bad request. Missing '%1$' is not a number.",
+    "isMongoId": "Bad request. Provided '%1$' is not a Mongo ID."
+}
