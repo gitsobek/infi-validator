@@ -49,7 +49,7 @@ Available paths are as follows:
 - query
 
 In order to check if the validator detected an invalid value, use the `hasErrors()` method. 
-Based on the flag returned by this function, you can perform further operations like throwing an error or sending a response back to the client with automatically generated code and message from template generator.
+Based on the flag returned by this function, you can perform further operations like throwing an error or sending a response back to the client with automatically generated code and message from the template generator.
 
 > Method `getFirstError()` returns error details containing code and message that were collected at the time of encountering the first incorrect value. You can also use `getErrors()` method to get all errors that were thrown during the validation check.
 
@@ -83,12 +83,12 @@ validator
 
 ### Sanitization
 
-You can sanitize incoming requests by stripping off vulnerable keywords from properties and replacing their values to a sanitized form. The library examines values for `XSS` and `No-SQL injection` occurrences.  
+You can sanitize incoming requests by stripping off vulnerable keywords from properties and replacing their values to a sanitized form. The library examines values for `XSS` and `No-SQL Injection` occurrences.  
 
 In order to sanitize incoming request, use the `cleanInjections()` method:
 
 ```javascript
-/* Injected body
+/* 
 {
     username: "admin",
     password: "<script>alert('xss');</script>",
@@ -103,9 +103,22 @@ In order to sanitize incoming request, use the `cleanInjections()` method:
 validator.cleanInjections();
 
 const { body } = validator.getSafeObject();
+
+console.log('is body safe?', body);
+/* is body safe?
+{
+    username: "admin",
+    password: "&lt;script&gt;alert('xss');&lt;/script&gt;",
+    role: {
+        eq: {
+            ne: "not-not-admin"
+        }
+    }
+}
+*/
 ```
 
-The sanitized body object is available on the `getSafeObject()` method call. As for the `cleanInjections` method, it iterated over the data recursively and cleaned off every encountered injection and vulnerability, thus you can continue to work on this object safely. 
+The sanitized body object is available on the `getSafeObject()` method call. As for the `cleanInjections()` method, it iterates over the data recursively and cleans off every encountered injection and vulnerability, thus you can continue to work on this object safely. 
 
 ## Tests
 
