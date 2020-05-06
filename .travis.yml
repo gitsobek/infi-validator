@@ -8,6 +8,10 @@ cache:
   directories:
     - node_modules
 
-build_script:
-  - npm i
-  - npm run test
+install:
+  - npm install
+
+script:
+  - npm run test:coverage
+
+after_script: "cat coverage/lcov.info | node_modules/coveralls/bin/coveralls.js"
