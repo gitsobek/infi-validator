@@ -2,6 +2,10 @@
     "isNotEmpty": "Bad request. Empty '%1$' provided.",
     "isExists": "Bad request. Missing '%1$' in %2$'.",
     "isString": "Bad request. Provided '%1$' is not a string.",
-    "isNumber": "Bad request. Missing '%1$' is not a number.",
+    "isNumber": "Bad request. Provided '%1$' is not a number.",
+    "isBoolean": "Bad request. Provided '%1$' is not a boolean.",
+    "isObject": "Bad request. Provided '%1$' is not an object.",
+    "isFirebaseId": "Bad request. Provided '%1$' is not a Firebase ID.",
+    "isUUIDv4": "Bad request. Provided '%1$' is not a UUID Version 4.",
     "isMongoId": "Bad request. Provided '%1$' is not a Mongo ID."
 }

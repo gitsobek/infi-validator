@@ -8,7 +8,9 @@ describe('Validate request', () => {
             params: {
                 userId: 1,
                 docId: '5e8703d290165868e8c2cd50',
-                wrongDocId: '5e8703d290165868e8c2cd50xxx'
+                wrongDocId: '5e8703d290165868e8c2cd50xxx',
+                firebaseDocId: 'A1pE4Up36ORa3QcWBMxrrnKjIK72',
+                notAFirebaseDocId: 'JUA84jfA73Dp'
             },
             body: {
                 secureKey: {
@@ -16,11 +18,14 @@ describe('Validate request', () => {
                 },
                 notSecureKey: {
                     $gt: ''
-                }
+                },
+                isAdmin: true
             },
             query: {
                 title: 'Research about secure Node.js apps',
                 emptyTitle: '',
+                UUIDv1: '307d2376-91f9-11ea-bb37-0242ac130002',
+                UUIDv4: '3d1e0dc9-3c5a-43fa-a3ea-5e758e92c6fe',
             }
         };
         validator = new InfiValidator(req);
@@ -82,6 +87,33 @@ describe('Validate request', () => {
         expect(error.message).toBe(`Bad request. Provided 'wrongDocId' is not a Mongo ID.`);
     });
 
+    it('detects correct Firebase ID in params object (params => firebaseDocId)', () => {
+        expect.assertions(1);
+        validator
+            .checkValues('params', {
+                firebaseDocId: ['isFirebaseId']
+            });
+
+        const hasError = validator.hasErrors();
+        expect(hasError).toBe(false);
+    });
+
+    it('detects incorrect Firebase ID in params object (params => notAFirebaseDocId)', () => {
+        expect.assertions(3);
+        validator
+            .checkValues('params', {
+                notAFirebaseDocId: ['isFirebaseId']
+            });
+
+        const hasError = validator.hasErrors();
+        const error = validator.getFirstError();
+
+        expect(hasError).toBe(true);
+        expect(error.code).toBe(400);
+        expect(error.message).toBe(`Bad request. Provided 'notAFirebaseDocId' is not a Firebase ID.`);
+    });
+
+
     it('detects No-SQL injection and sanitizes the body (body => notSecureKey)', () => {
         expect.assertions(1);
 
@@ -91,7 +123,8 @@ describe('Validate request', () => {
             },
             notSecureKey: {
                 gt: ''
-            }
+            },
+            isAdmin: true
         };
 
         validator
@@ -106,6 +139,30 @@ describe('Validate request', () => {
         expect(body).toEqual(cleanBody);
     });
 
+    it('detects value is object (body => secureKey)', () => {
+        expect.assertions(1);
+
+        validator
+            .checkValues('body', {
+                secureKey: ['isObject'],
+            });
+
+        const hasError = validator.hasErrors();
+        expect(hasError).toBe(false);
+    });
+
+    it('detects value is boolean (body => isAdmin)', () => {
+        expect.assertions(1);
+
+        validator
+            .checkValues('body', {
+                isAdmin: ['isBoolean'],
+            });
+
+        const hasError = validator.hasErrors();
+        expect(hasError).toBe(false);
+    });
+
     it('detects value is string (query => title)', () => {
         expect.assertions(1);
 
@@ -116,6 +173,34 @@ describe('Validate request', () => {
 
         const hasError = validator.hasErrors();
         expect(hasError).toBe(false);
+    });
+
+    it('provides valid UUID Version 4 and detects correct version in uuid v4 validator (query => UUIDv4)', () => {
+        expect.assertions(1);
+
+        validator
+            .checkValues('query', {
+                UUIDv4: ['isUUIDv4'],
+            });
+
+        const hasError = validator.hasErrors();
+        expect(hasError).toBe(false);
+    });
+
+    it('provides valid UUID Version 1 and detects incorrect version in uuid v4 validator (query => UUIDv1)', () => {
+        expect.assertions(3);
+
+        validator
+            .checkValues('query', {
+                UUIDv1: ['isUUIDv4'],
+            });
+
+        const hasError = validator.hasErrors();
+        const error = validator.getFirstError();
+
+        expect(hasError).toBe(true);
+        expect(error.code).toBe(400);
+        expect(error.message).toBe(`Bad request. Provided 'UUIDv1' is not a UUID Version 4.`);
     });
 
     it('detects two invalid properties and returns correct number of errors (params => wrongDocId && query => emptyTitle)', () => {
