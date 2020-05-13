@@ -1,3 +1,5 @@
+'use strict';
+
 const InfiValidator = require('../lib/validator');
 
 describe('Validate request', () => {
@@ -19,7 +21,8 @@ describe('Validate request', () => {
                 notSecureKey: {
                     $gt: ''
                 },
-                isAdmin: true
+                isAdmin: true,
+                accessLevels: [1, 2, 3]
             },
             query: {
                 title: 'Research about secure Node.js apps',
@@ -124,7 +127,8 @@ describe('Validate request', () => {
             notSecureKey: {
                 gt: ''
             },
-            isAdmin: true
+            isAdmin: true,
+            accessLevels: [1, 2, 3]
         };
 
         validator
@@ -151,12 +155,60 @@ describe('Validate request', () => {
         expect(hasError).toBe(false);
     });
 
+    it('detects correct key name in object (body => secureKey)', () => {
+        expect.assertions(3);
+
+        const isInObj = 'token' in req.body.secureKey;
+        expect(typeof isInObj).toBe('boolean');
+        expect(isInObj).toBe(true);
+
+        validator
+            .checkValues('body', {
+                secureKey: ['hasObjectKey:token'],
+            });
+
+        const hasError = validator.hasErrors();
+        expect(hasError).toBe(false);
+    });
+
     it('detects value is boolean (body => isAdmin)', () => {
         expect.assertions(1);
 
         validator
             .checkValues('body', {
                 isAdmin: ['isBoolean'],
+            });
+
+        const hasError = validator.hasErrors();
+        expect(hasError).toBe(false);
+    });
+
+    it('detects array has correct length (body => accessLevels)', () => {
+        expect.assertions(3);
+
+        const sizeOfArr = req.body.accessLevels.length;
+        expect(typeof sizeOfArr).toBe('number');
+        expect(sizeOfArr).toBe(3);
+
+        validator
+            .checkValues('body', {
+                accessLevels: ['hasLength:3'],
+            });
+
+        const hasError = validator.hasErrors();
+        expect(hasError).toBe(false);
+    });
+
+    it('detects array has element of correct passed value (body => accessLevels)', () => {
+        expect.assertions(3);
+
+        const hasElementOfTwo = !!req.body.accessLevels.find(v => v === 2);
+        expect(typeof hasElementOfTwo).toBe('boolean');
+        expect(hasElementOfTwo).toBe(true);
+
+        validator
+            .checkValues('body', {
+                accessLevels: ['hasArrayItem:2'],
             });
 
         const hasError = validator.hasErrors();
