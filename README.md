@@ -80,7 +80,6 @@ validator
     });
 ```
 
-
 ### Sanitization
 
 You can sanitize incoming requests by stripping off vulnerable keywords from properties and replacing their values to a sanitized form. The library examines values for `XSS` and `No-SQL Injection` occurrences.  
@@ -119,6 +118,31 @@ console.log('is body safe?', body);
 ```
 
 The sanitized body object is available on the `getSafeObject()` method call. As for the `cleanInjections()` method, it iterates over the data recursively and cleans off every encountered injection and vulnerability, thus you can continue to work on this object safely. 
+
+### List of validators
+
+Validators are divided into two groups: simple and complex. Simple validators are mainly used to check the type of passed value. Available validators are listed below:
+```
+isNotEmpty, isExists, isString, isNumber, isBoolean, isObject, isArray 
+isFirebaseId, isUUIDv1, isUUIDv4, isMongoId
+```
+
+Complex validators are used to check specific condition based on a argument that was passed after the colon.
+
+```
+hasLength:n (type n => number)
+hasArrayItem:v (type v => number | string | boolean | null | undefined)
+hasObjectKey:k (type k => number | string)
+``` 
+
+Example of using a complex validator:
+
+```javascript
+validator
+    .checkValues('body', {
+        items: ['isArray', 'hasLength:3', 'hasArrayItem:flowers']
+    });
+```
 
 ## Tests
 

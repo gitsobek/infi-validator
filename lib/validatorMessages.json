@@ -6,6 +6,7 @@
     "isBoolean": "Bad request. Provided '%1$' is not a boolean.",
     "isObject": "Bad request. Provided '%1$' is not an object.",
     "isFirebaseId": "Bad request. Provided '%1$' is not a Firebase ID.",
+    "isUUIDv1": "Bad request. Provided '%1$' is not a UUID Version 1.",
     "isUUIDv4": "Bad request. Provided '%1$' is not a UUID Version 4.",
     "isMongoId": "Bad request. Provided '%1$' is not a Mongo ID.",
     "hasLength": "Bad request. Provided '%1$' is not of length '%2$'.",

@@ -1,5 +1,10 @@
 'use strict';
 
+const {
+    detectOpt,
+    castCorrectType
+} = require('../lib/helpers');
+
 const InfiValidator = require('../lib/validator');
 
 describe('Validate request', () => {
@@ -183,6 +188,18 @@ describe('Validate request', () => {
         expect(hasError).toBe(false);
     });
 
+    it('detects value is array (body => accessLevels)', () => {
+        expect.assertions(1);
+
+        validator
+            .checkValues('body', {
+                accessLevels: ['isArray'],
+            });
+
+        const hasError = validator.hasErrors();
+        expect(hasError).toBe(false);
+    });
+
     it('detects array has correct length (body => accessLevels)', () => {
         expect.assertions(3);
 
@@ -286,6 +303,41 @@ describe('Validate request', () => {
 
         expect(checkThisLocation).toThrow();
         expect(checkThisLocation).toThrowError(/^Invalid location name: noSuchLocation$/)
+    });
+
+    it('converts passed argument to a correct type (helpers: castCorrectType)', () => {
+        expect.assertions(10);
+
+        const maybeNum = castCorrectType('24');
+        const maybeBool = castCorrectType('true');
+        const maybeNull = castCorrectType('null');
+        const maybeUndefined = castCorrectType('undefined');
+        const maybeStillString = castCorrectType('abc');
+
+        expect(typeof maybeNum).toBe('number');
+        expect(maybeNum).toBe(24);
+
+        expect(typeof maybeBool).toBe('boolean');
+        expect(maybeBool).toBe(true);
+
+        /* typeof null === 'object' -- documented behavior in MDN page */
+        expect(typeof maybeNull).toBe('object');
+        expect(maybeNull).toBe(null);
+
+        expect(typeof maybeUndefined).toBe('undefined');
+        expect(maybeUndefined).toBe(undefined);
+
+        expect(typeof maybeStillString).toBe('string');
+        expect(maybeStillString).toBe('abc');
+    });
+
+    it('detects complex validator (helpers: detectOpt)', () => {
+        expect.assertions(2);
+
+        const { arg, opName } = detectOpt('hasLength:4', {});
+
+        expect(arg).toBe('4');
+        expect(opName).toBe('hasLength');
     });
 
     afterEach(() => {
