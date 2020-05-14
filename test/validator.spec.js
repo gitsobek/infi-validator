@@ -58,6 +58,22 @@ describe('Validate request', () => {
          expect(query.emptyTitle).toHaveLength(0);
     });
 
+    it('throws error on empty request object', () => {
+        expect.assertions(2);
+
+        function checkThisRequest() {
+            const emptyValidatorObj = new InfiValidator(null);
+
+            emptyValidatorObj
+                .checkValues('params', {
+                    userId: 'isExists'
+                });
+        }
+
+        expect(checkThisRequest).toThrow();
+        expect(checkThisRequest).toThrowError(/^A valid Express request object is required for validation.$/)
+    });
+
     it('detects existing value in params object (params => userId)', () => {
         expect.assertions(1);
         validator
